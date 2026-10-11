@@ -1,7 +1,7 @@
 # Runs the NCC detection quality suite against the real gameplay fixtures.
 #
 # The fixtures (game footage) live as release assets in the private repo
-# ZSleyer/encounty-test-fixtures and cannot be published with the code, so
+# Encounty/encounty-test-fixtures and cannot be published with the code, so
 # this workflow needs the FIXTURES_TOKEN secret (a fine-grained PAT with read
 # access to that repo's contents). Without the secret the job skips cleanly,
 # which also covers forks and external pull requests.
@@ -72,7 +72,7 @@ jobs:
         run: |
           mkdir -p frontend/src/engine/__tests__/fixtures
           gh release download fixtures-v2 \
-            --repo ZSleyer/encounty-test-fixtures \
+            --repo Encounty/encounty-test-fixtures \
             --dir frontend/src/engine/__tests__/fixtures
 
       - name: Run NCC quality suite
