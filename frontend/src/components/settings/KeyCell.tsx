@@ -32,10 +32,18 @@ export interface KeyCellProps {
   hasError?: boolean;
 }
 
-/** Border and background of the cell for its current state. */
-function cellStateClass(isRecording: boolean, hasError: boolean): string {
-  if (isRecording) return "bg-accent-blue/10 border-accent-blue text-accent-blue";
+/**
+ * Border and background of the cell for its current state. An empty slot gets
+ * a dashed border, the common cue for "drop or put something here".
+ */
+function cellStateClass(isRecording: boolean, hasError: boolean, isEmpty: boolean): string {
+  if (isRecording) {
+    return "bg-accent-blue/10 border-accent-blue text-accent-blue ring-2 ring-accent-blue/30";
+  }
   if (hasError) return "bg-bg-primary border-accent-red";
+  if (isEmpty) {
+    return "bg-transparent border-dashed border-border-input text-text-muted hover:border-accent-blue hover:text-accent-blue";
+  }
   return "bg-bg-primary border-border-input hover:border-border-default";
 }
 
@@ -87,7 +95,7 @@ export function KeyCell({
         onKeyDown={handleKeyDown}
         aria-label={t("hotkeys.cellLabel", { name, key: valueText })}
         aria-describedby={messageId}
-        className={`w-full h-9 flex items-center gap-1.5 pl-2 ${isBound ? "pr-9" : "pr-2"} rounded-md border text-left overflow-hidden transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue ${cellStateClass(isRecording, hasError)}`}
+        className={`w-full h-9 flex items-center gap-1.5 pl-2 ${isBound ? "pr-9" : "pr-2"} rounded-md border text-left overflow-hidden transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue ${cellStateClass(isRecording, hasError, combo === "")}`}
       >
         <CellContent combo={combo} isRecording={isRecording} liveModifiers={liveModifiers} />
       </button>
@@ -129,8 +137,8 @@ function CellContent({
   }
   if (combo) return <KeyCombo combo={combo} className="overflow-hidden" />;
   return (
-    <span aria-hidden="true" className="text-xs 2xl:text-sm text-text-faint">
-      –
+    <span aria-hidden="true" className="truncate text-xs 2xl:text-sm">
+      {t("hotkeys.cellEmpty")}
     </span>
   );
 }

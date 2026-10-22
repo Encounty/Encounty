@@ -927,6 +927,7 @@
   "hotkeys.cellTarget": "{{action}} for {{name}}",
   "hotkeys.cellLabel": "{{name}}: {{key}}",
   "hotkeys.recordingShort": "Press a key…",
+  "hotkeys.cellEmpty": "Set key",
   "hotkeys.help": "Click a field and press the key combination you want. Esc cancels recording, Delete or the × clears a binding.",
   "hotkeys.saveFailed": "Could not save the hotkey",
   "hotkeys.summary": "Pinned hotkeys: {{list}}",

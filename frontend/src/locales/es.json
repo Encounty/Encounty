@@ -927,6 +927,7 @@
   "hotkeys.cellTarget": "{{action}} para {{name}}",
   "hotkeys.cellLabel": "{{name}}: {{key}}",
   "hotkeys.recordingShort": "Pulsa una tecla…",
+  "hotkeys.cellEmpty": "Asignar tecla",
   "hotkeys.help": "Haz clic en un campo y pulsa la combinación de teclas deseada. Esc cancela la grabación, Supr o la × borra una asignación.",
   "hotkeys.saveFailed": "No se pudo guardar el hotkey",
   "hotkeys.summary": "Hotkeys fijos: {{list}}",

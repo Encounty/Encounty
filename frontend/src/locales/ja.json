@@ -927,6 +927,7 @@
   "hotkeys.cellTarget": "{{name}}の{{action}}",
   "hotkeys.cellLabel": "{{name}}: {{key}}",
   "hotkeys.recordingShort": "キーを押してください…",
+  "hotkeys.cellEmpty": "キーを設定",
   "hotkeys.help": "フィールドをクリックして、割り当てたいキーの組み合わせを押してください。Escで記録をキャンセル、Deleteキーまたは×で割り当てを解除します。",
   "hotkeys.saveFailed": "Hotkeyを保存できませんでした",
   "hotkeys.summary": "固定Hotkey: {{list}}",
