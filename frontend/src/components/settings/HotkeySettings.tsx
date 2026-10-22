@@ -3,7 +3,13 @@ import { HotkeyMap } from "../../types";
 import { useI18n } from "../../contexts/I18nContext";
 import { apiUrl } from "../../utils/api";
 import { useHotkeyRecorder } from "../../hooks/useHotkeyRecorder";
-import { HOTKEY_ACTION_ICONS, HOTKEY_ACTIONS, readRejection, Translate, writeHotkey } from "./hotkeyActions";
+import {
+  HOTKEY_ACTION_ICONS,
+  HOTKEY_ACTIONS,
+  readRejection,
+  Translate,
+  writeHotkey,
+} from "./hotkeyActions";
 import { HotkeyRecordingStatus, HotkeyRowMessage, KeyCell } from "./KeyCell";
 
 interface HotkeySettingsProps {

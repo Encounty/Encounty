@@ -270,7 +270,11 @@ export function DashboardCounterTab({
         {/* Action row: minus (secondary), plus (primary accent), reset (ghost).
             Keys live in each button's tooltip instead of under the row. */}
         <div className="flex items-center justify-center gap-2 mt-5">
-          <KeyTooltip label={`\u2212${step}`} keys={actionKeys("decrement")} keyId={`${keyIdBase}-decrement`}>
+          <KeyTooltip
+            label={`\u2212${step}`}
+            keys={actionKeys("decrement")}
+            keyId={`${keyIdBase}-decrement`}
+          >
             <button
               {...keyProps("decrement")}
               onClick={() => !isCompleted && onDecrement(pokemon.id)}
@@ -285,7 +289,11 @@ export function DashboardCounterTab({
               )}
             </button>
           </KeyTooltip>
-          <KeyTooltip label={`+${step}`} keys={actionKeys("increment")} keyId={`${keyIdBase}-increment`}>
+          <KeyTooltip
+            label={`+${step}`}
+            keys={actionKeys("increment")}
+            keyId={`${keyIdBase}-increment`}
+          >
             <button
               {...keyProps("increment")}
               onClick={() => !isCompleted && onIncrement(pokemon.id)}
@@ -301,7 +309,11 @@ export function DashboardCounterTab({
             </button>
           </KeyTooltip>
           {!isCompleted && (
-            <KeyTooltip label={t("tooltip.common.reset")} keys={actionKeys("reset")} keyId={`${keyIdBase}-reset`}>
+            <KeyTooltip
+              label={t("tooltip.common.reset")}
+              keys={actionKeys("reset")}
+              keyId={`${keyIdBase}-reset`}
+            >
               <button
                 {...keyProps("reset")}
                 onClick={() => onReset(pokemon.id)}
