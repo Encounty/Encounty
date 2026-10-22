@@ -3,6 +3,7 @@
  * share: the global action table, which hunts can be bound or targeted, the
  * write request and the way a rejected write is turned into a message.
  */
+import { Minus, Play, Plus, RotateCcw, SkipForward, type LucideIcon } from "lucide-react";
 import { HotkeyMap, Pokemon } from "../../types";
 import { apiUrl } from "../../utils/api";
 import { isPhaseEntry } from "../../utils/phase";
@@ -25,6 +26,18 @@ export const HOTKEY_ACTIONS: HotkeyAction[] = [
   { key: "next_pokemon", labelKey: "hotkeys.nextPokemon" },
   { key: "hunt_toggle", labelKey: "hotkeys.huntToggle" },
 ];
+
+/**
+ * The icon of each action, the same glyph the dashboard's counter buttons
+ * carry, so a row on the hotkey page is recognisable as the button it drives.
+ */
+export const HOTKEY_ACTION_ICONS: Record<keyof HotkeyMap, LucideIcon> = {
+  increment: Plus,
+  decrement: Minus,
+  reset: RotateCcw,
+  next_pokemon: SkipForward,
+  hunt_toggle: Play,
+};
 
 /**
  * A hunt can be bound or made the global target while it is still being

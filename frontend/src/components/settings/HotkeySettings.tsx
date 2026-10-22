@@ -3,7 +3,7 @@ import { HotkeyMap } from "../../types";
 import { useI18n } from "../../contexts/I18nContext";
 import { apiUrl } from "../../utils/api";
 import { useHotkeyRecorder } from "../../hooks/useHotkeyRecorder";
-import { HOTKEY_ACTIONS, readRejection, Translate, writeHotkey } from "./hotkeyActions";
+import { HOTKEY_ACTION_ICONS, HOTKEY_ACTIONS, readRejection, Translate, writeHotkey } from "./hotkeyActions";
 import { HotkeyRecordingStatus, HotkeyRowMessage, KeyCell } from "./KeyCell";
 
 interface HotkeySettingsProps {
@@ -86,6 +86,7 @@ export function HotkeySettings({ hotkeys, onUpdate }: Readonly<HotkeySettingsPro
       <ul className="space-y-1.5">
         {HOTKEY_ACTIONS.map(({ key, labelKey }) => {
           const label = t(labelKey);
+          const Icon = HOTKEY_ACTION_ICONS[key];
           const isRecording = recording === key;
           const combo = local[key] ?? "";
           const message = rowMessage(
@@ -102,10 +103,14 @@ export function HotkeySettings({ hotkeys, onUpdate }: Readonly<HotkeySettingsPro
                 isRecording ? "border-accent-blue/50" : "border-transparent"
               }`}
             >
-              {/* Wrapping instead of shrinking: on a narrow screen the cell
-                  drops under the label rather than squeezing it away. */}
-              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                <span className="text-sm text-text-secondary">{label}</span>
+              {/* Label and cell sit side by side so the eye does not cross the
+                  card to pair them. Wrapping instead of shrinking: on a narrow
+                  screen the cell drops under the label. */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="flex items-center gap-2 w-48 text-sm text-text-secondary">
+                  <Icon aria-hidden="true" className="w-4 h-4 shrink-0 text-text-muted" />
+                  {label}
+                </span>
                 <KeyCell
                   combo={combo}
                   isRecording={isRecording}
