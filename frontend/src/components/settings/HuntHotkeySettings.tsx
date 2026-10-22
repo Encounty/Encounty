@@ -1,10 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import { Toggle } from "../shared/Toggle";
 import { EntryHotkeyAction, EntryHotkeys, Group, Pokemon } from "../../types";
 import { useI18n } from "../../contexts/I18nContext";
 import { ENTRY_HOTKEY_ACTIONS } from "../../utils/hotkeyCombo";
 import { useHotkeyRecorder } from "../../hooks/useHotkeyRecorder";
 import { sidebarSpriteUrl } from "../dashboard/presentation";
 import {
+  HOTKEY_ACTION_ICONS,
   huntIdentity,
   isRunningHunt,
   readRejection,
@@ -129,6 +132,7 @@ function HotkeyEntryRow({
       {ENTRY_HOTKEY_ACTIONS.map((action, i) => {
         const slotId = slotIds[i];
         const actionLabel = t(`hotkeys.${action}`);
+        const Icon = HOTKEY_ACTION_ICONS[action];
         const isRecording = recording === slotId;
         const hasError = refusal?.slotId === slotId;
         return (
@@ -139,7 +143,11 @@ function HotkeyEntryRow({
             className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 @xl:block"
           >
             {/* The cell's accessible name already carries the action. */}
-            <span aria-hidden="true" className="text-xs text-text-secondary @xl:hidden">
+            <span
+              aria-hidden="true"
+              className="flex items-center gap-1.5 text-xs text-text-secondary @xl:hidden"
+            >
+              <Icon className="w-3.5 h-3.5 shrink-0 text-text-muted" />
               {actionLabel}
             </span>
             <KeyCell
@@ -231,11 +239,15 @@ function EntryMatrix({ headingId, heading, entries, ...rowProps }: Readonly<Entr
         className={`flex items-end px-3 border border-transparent text-xs font-semibold text-text-muted uppercase ${MATRIX_COLUMNS}`}
       >
         <h3 id={headingId}>{heading}</h3>
-        {ENTRY_HOTKEY_ACTIONS.map((action) => (
-          <span key={action} aria-hidden="true" className="hidden @xl:block">
-            {t(`hotkeys.${action}`)}
-          </span>
-        ))}
+        {ENTRY_HOTKEY_ACTIONS.map((action) => {
+          const Icon = HOTKEY_ACTION_ICONS[action];
+          return (
+            <span key={action} aria-hidden="true" className="hidden @xl:flex items-center gap-1.5">
+              <Icon className="w-3.5 h-3.5 shrink-0" />
+              {t(`hotkeys.${action}`)}
+            </span>
+          );
+        })}
       </div>
       <ul aria-labelledby={headingId} className="space-y-2">
         {entries.map((entry) => (
@@ -243,6 +255,66 @@ function EntryMatrix({ headingId, heading, entries, ...rowProps }: Readonly<Entr
         ))}
       </ul>
     </section>
+  );
+}
+
+// --- Filter ---
+
+/** Entry count from which the search and the "only bound" switch appear. */
+const FILTER_THRESHOLD = 6;
+
+/**
+ * Whether an entry passes the search and the "only bound" switch. The search
+ * matches the name and the secondary line, so a game or form finds a hunt too.
+ */
+function matchesFilter(
+  entry: HotkeyEntry,
+  query: string,
+  onlyBound: boolean,
+  overrides: Record<string, string>,
+): boolean {
+  const q = query.trim().toLowerCase();
+  if (q && !`${entry.name} ${entry.meta}`.toLowerCase().includes(q)) return false;
+  if (!onlyBound) return true;
+  return ENTRY_HOTKEY_ACTIONS.some(
+    (action) => (overrides[slotIdOf(entry, action)] ?? entry.hotkeys?.[action] ?? "") !== "",
+  );
+}
+
+interface EntryFilterProps {
+  query: string;
+  onlyBound: boolean;
+  onQuery: (q: string) => void;
+  onOnlyBound: (v: boolean) => void;
+}
+
+/** Search field and "only bound" switch above a long hunt and group list. */
+function EntryFilter({ query, onlyBound, onQuery, onOnlyBound }: Readonly<EntryFilterProps>) {
+  const { t } = useI18n();
+  const toggleId = useId();
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="relative flex-1 min-w-48">
+        <Search
+          aria-hidden="true"
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-faint"
+        />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          placeholder={t("dash.search")}
+          aria-label={t("hotkeys.searchLabel")}
+          className="w-full h-9 bg-bg-primary border border-border-input rounded-md pl-8 pr-2 text-sm text-text-primary placeholder-text-faint hover:border-border-default transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue"
+        />
+      </div>
+      <div className="inline-flex items-center gap-2">
+        <Toggle id={toggleId} enabled={onlyBound} onChange={() => onOnlyBound(!onlyBound)} />
+        <label htmlFor={toggleId} className="text-sm text-text-secondary cursor-pointer">
+          {t("hotkeys.onlyBound")}
+        </label>
+      </div>
+    </div>
   );
 }
 
@@ -266,6 +338,8 @@ export function HuntHotkeySettings({ pokemon, groups }: Readonly<HuntHotkeySetti
   // snapshot prop only catches up on the next state broadcast.
   const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [feedback, setFeedback] = useState<SlotFeedback | null>(null);
+  const [query, setQuery] = useState("");
+  const [onlyBound, setOnlyBound] = useState(false);
 
   const runningHunts = useMemo(() => pokemon.filter(isRunningHunt), [pokemon]);
   const huntEntries = useMemo(() => runningHunts.map(huntEntry), [runningHunts]);
@@ -304,9 +378,15 @@ export function HuntHotkeySettings({ pokemon, groups }: Readonly<HuntHotkeySetti
 
   const clearBinding = useCallback((slotId: string) => void write(slotId, ""), [write]);
 
-  if (huntEntries.length === 0 && groupEntries.length === 0) {
+  const totalEntries = huntEntries.length + groupEntries.length;
+  if (totalEntries === 0) {
     return <p className="text-xs 2xl:text-sm text-text-muted">{t("hotkeys.huntEmpty")}</p>;
   }
+
+  const showFilter = totalEntries >= FILTER_THRESHOLD;
+  const keep = (entry: HotkeyEntry) => matchesFilter(entry, query, onlyBound, overrides);
+  const shownHunts = showFilter ? huntEntries.filter(keep) : huntEntries;
+  const shownGroups = showFilter ? groupEntries.filter(keep) : groupEntries;
 
   const rowProps = {
     overrides,
@@ -320,22 +400,37 @@ export function HuntHotkeySettings({ pokemon, groups }: Readonly<HuntHotkeySetti
 
   return (
     <div className="@container space-y-5">
-      {huntEntries.length > 0 && (
+      {showFilter && (
+        <EntryFilter
+          query={query}
+          onlyBound={onlyBound}
+          onQuery={setQuery}
+          onOnlyBound={setOnlyBound}
+        />
+      )}
+
+      {shownHunts.length > 0 && (
         <EntryMatrix
           headingId="hunt-hotkeys-hunts"
           heading={t("hotkeys.huntsLabel")}
-          entries={huntEntries}
+          entries={shownHunts}
           {...rowProps}
         />
       )}
 
-      {groupEntries.length > 0 && (
+      {shownGroups.length > 0 && (
         <EntryMatrix
           headingId="hunt-hotkeys-groups"
           heading={t("hotkeys.groupsLabel")}
-          entries={groupEntries}
+          entries={shownGroups}
           {...rowProps}
         />
+      )}
+
+      {shownHunts.length + shownGroups.length === 0 && (
+        <p role="status" className="text-xs 2xl:text-sm text-text-muted">
+          {t("detector.noSearchResults")}
+        </p>
       )}
 
       <HotkeyRecordingStatus

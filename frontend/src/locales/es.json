@@ -929,6 +929,8 @@
   "hotkeys.recordingShort": "Pulsa una tecla…",
   "hotkeys.cellEmpty": "Asignar tecla",
   "hotkeys.targetHelpLabel": "Explicar el objetivo global",
+  "hotkeys.searchLabel": "Buscar hunts y grupos",
+  "hotkeys.onlyBound": "Solo asignados",
   "hotkeys.help": "Haz clic en un campo y pulsa la combinación de teclas deseada. Esc cancela la grabación, Supr o la × borra una asignación.",
   "hotkeys.saveFailed": "No se pudo guardar el hotkey",
   "hotkeys.summary": "Hotkeys fijos: {{list}}",

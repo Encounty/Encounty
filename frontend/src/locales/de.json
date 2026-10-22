@@ -929,6 +929,8 @@
   "hotkeys.recordingShort": "Taste drücken…",
   "hotkeys.cellEmpty": "Taste belegen",
   "hotkeys.targetHelpLabel": "Globales Ziel erklären",
+  "hotkeys.searchLabel": "Hunts und Gruppen durchsuchen",
+  "hotkeys.onlyBound": "Nur belegte",
   "hotkeys.help": "Klicke auf ein Feld und drücke die gewünschte Tastenkombination. Esc bricht die Aufnahme ab, Entf oder das × löscht eine Belegung.",
   "hotkeys.saveFailed": "Hotkey konnte nicht gespeichert werden",
   "hotkeys.summary": "Feste Hotkeys: {{list}}",

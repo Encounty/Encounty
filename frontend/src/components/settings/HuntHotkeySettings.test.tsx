@@ -341,4 +341,35 @@ describe("HuntHotkeySettings", () => {
     ).toBeInTheDocument();
     expect(writeCalls().length).toBe(0);
   });
+
+  it("offers search and an only-bound filter once the list grows long", () => {
+    const { rerender } = render(<HuntHotkeySettings pokemon={pokemon} groups={groups} />);
+    // Four entries: short enough to scan, so no filter.
+    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+
+    const many = [
+      ...pokemon,
+      makePokemon({ id: "poke-6", name: "Pikachu", game: "sword" }),
+      makePokemon({ id: "poke-7", name: "Evoli" }),
+    ];
+    rerender(<HuntHotkeySettings pokemon={many} groups={groups} />);
+
+    fireEvent.change(screen.getByRole("searchbox", { name: "Hunts und Gruppen durchsuchen" }), {
+      target: { value: "pika" },
+    });
+    expect(screen.getByText("Pikachu")).toBeInTheDocument();
+    expect(screen.queryByText("Evoli")).not.toBeInTheDocument();
+    expect(screen.queryByText("Johto")).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "" } });
+    fireEvent.click(screen.getByRole("switch"));
+    // Only Glumanda and the Johto group carry a binding.
+    expect(screen.getByText("Glumanda")).toBeInTheDocument();
+    expect(screen.getByText("Johto")).toBeInTheDocument();
+    expect(screen.queryByText("Bisasam")).not.toBeInTheDocument();
+    expect(screen.queryByText("Kanto")).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "zzz" } });
+    expect(screen.getByText("Keine Ergebnisse")).toBeInTheDocument();
+  });
 });
