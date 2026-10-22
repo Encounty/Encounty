@@ -121,6 +121,8 @@ describe("HotkeyPage", () => {
       });
       render(<HotkeyPage />);
       await settle();
+      // The hint lives in the help popover next to the target label.
+      fireEvent.click(screen.getByRole("button", { name: "Globales Ziel erklären" }));
       const hint = screen.getByText(/Ziel per Tastatur wechseln/);
       expect(hint).toHaveTextContent("Global Ctrl+N");
     });
@@ -128,6 +130,7 @@ describe("HotkeyPage", () => {
     it("asks to bind Next Pokémon while it is unbound", async () => {
       render(<HotkeyPage />);
       await settle();
+      fireEvent.click(screen.getByRole("button", { name: "Globales Ziel erklären" }));
       expect(
         screen.getByText(/Belege unten „Nächstes Pokémon", um das Ziel per Tastatur zu wechseln/),
       ).toBeInTheDocument();

@@ -928,6 +928,7 @@
   "hotkeys.cellLabel": "{{name}} : {{key}}",
   "hotkeys.recordingShort": "Appuyez sur une touche…",
   "hotkeys.cellEmpty": "Définir une touche",
+  "hotkeys.targetHelpLabel": "Expliquer la cible globale",
   "hotkeys.help": "Cliquez sur un champ et appuyez sur la combinaison de touches souhaitée. Échap annule l'enregistrement, Suppr ou le × efface une attribution.",
   "hotkeys.saveFailed": "Impossible d'enregistrer le hotkey",
   "hotkeys.summary": "Hotkeys épinglés : {{list}}",

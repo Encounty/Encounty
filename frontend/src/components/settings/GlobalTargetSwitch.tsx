@@ -7,6 +7,7 @@
 import { useId, useState } from "react";
 import type { Group, Pokemon } from "../../types";
 import { useI18n } from "../../contexts/I18nContext";
+import { HelpPopover } from "../shared/HelpPopover";
 import { KeyCombo } from "../shared/KeyCombo";
 import { sidebarSpriteUrl } from "../dashboard/presentation";
 import { huntIdentity, isRunningHunt } from "./hotkeyActions";
@@ -69,9 +70,26 @@ export function GlobalTargetSwitch({
   return (
     <div className="bg-bg-secondary rounded-lg px-3 py-2 space-y-1.5">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        <label htmlFor={selectId} className="text-sm 2xl:text-base text-text-secondary">
-          {t("hotkeys.targetLabel")}
-        </label>
+        <span className="flex items-center gap-1.5">
+          <label htmlFor={selectId} className="text-sm 2xl:text-base text-text-secondary">
+            {t("hotkeys.targetLabel")}
+          </label>
+          {/* Background a returning user no longer needs, one click away
+              instead of two permanent lines under the select. */}
+          <HelpPopover label={t("hotkeys.targetHelpLabel")} title={t("hotkeys.targetLabel")}>
+            <span className="flex flex-wrap items-center gap-1.5">
+              {nextPokemonCombo ? (
+                <>
+                  {t("hotkeys.targetCycle")}
+                  <KeyCombo combo={nextPokemonCombo} size="sm" kind="global" />
+                </>
+              ) : (
+                t("hotkeys.targetCycleUnbound")
+              )}
+            </span>
+            <span className="mt-2 block">{t("hotkeys.bothKindsNote")}</span>
+          </HelpPopover>
+        </span>
         <div className="flex items-center gap-2 min-w-0 flex-1">
           {/* Decorative: the select already names the target. */}
           {activeHunt && (
@@ -121,18 +139,6 @@ export function GlobalTargetSwitch({
           </select>
         </div>
       </div>
-
-      <p className="text-xs 2xl:text-sm text-text-muted flex flex-wrap items-center gap-1.5">
-        {nextPokemonCombo ? (
-          <>
-            {t("hotkeys.targetCycle")}
-            <KeyCombo combo={nextPokemonCombo} size="sm" kind="global" />
-          </>
-        ) : (
-          t("hotkeys.targetCycleUnbound")
-        )}
-      </p>
-      <p className="text-xs 2xl:text-sm text-text-muted">{t("hotkeys.bothKindsNote")}</p>
     </div>
   );
 }

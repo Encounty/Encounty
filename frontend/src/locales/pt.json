@@ -928,6 +928,7 @@
   "hotkeys.cellLabel": "{{name}}: {{key}}",
   "hotkeys.recordingShort": "Prime uma tecla…",
   "hotkeys.cellEmpty": "Definir tecla",
+  "hotkeys.targetHelpLabel": "Explicar o alvo global",
   "hotkeys.help": "Clica num campo e prime a combinação de teclas pretendida. Esc cancela a gravação, Delete ou o × apaga uma atribuição.",
   "hotkeys.saveFailed": "Não foi possível guardar o hotkey",
   "hotkeys.summary": "Hotkeys fixos: {{list}}",

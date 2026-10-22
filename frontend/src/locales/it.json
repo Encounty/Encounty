@@ -928,6 +928,7 @@
   "hotkeys.cellLabel": "{{name}}: {{key}}",
   "hotkeys.recordingShort": "Premi un tasto…",
   "hotkeys.cellEmpty": "Assegna tasto",
+  "hotkeys.targetHelpLabel": "Spiega l'obiettivo globale",
   "hotkeys.help": "Fai clic su un campo e premi la combinazione di tasti desiderata. Esc annulla la registrazione, Canc o la × cancella un'assegnazione.",
   "hotkeys.saveFailed": "Impossibile salvare l'hotkey",
   "hotkeys.summary": "Hotkey fissi: {{list}}",
