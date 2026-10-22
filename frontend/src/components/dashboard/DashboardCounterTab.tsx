@@ -2,7 +2,7 @@
  * DashboardCounterTab.tsx: Hero panel of the counter tab.
  */
 
-import { Fragment, ReactNode, useId } from "react";
+import { Fragment, ReactNode, useEffect, useId, useState } from "react";
 import { Minus, Pencil, Plus, RotateCcw, Split } from "lucide-react";
 import { EntryHotkeyAction, HotkeyMap, Pokemon } from "../../types";
 import { useI18n } from "../../contexts/I18nContext";
@@ -33,30 +33,61 @@ interface ActionKey {
 }
 
 /**
- * One counter button with the keys that trigger its action drawn below it,
- * each marked as global or pinned. The keys describe the button, so they are
- * read out with it, kind included.
+ * Wraps one counter button and shows, below it, a small tooltip with the
+ * action and the keys that trigger it. Keys are hints, so they cost no
+ * permanent space. The tooltip follows WCAG 1.4.13: it opens on hover and on
+ * keyboard focus, stays open while the pointer moves onto it, and Escape
+ * dismisses it. The key list stays mounted while closed: aria-describedby
+ * still reads hidden content, while screen readers skip it in the page flow.
  */
-function ActionWithKeys({
+function KeyTooltip({
+  label,
   keys,
   keyId,
   children,
-}: Readonly<{ keys: ActionKey[]; keyId: string; children: ReactNode }>) {
+}: Readonly<{ label: string; keys: ActionKey[]; keyId: string; children: ReactNode }>) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
-    <div className="flex flex-col items-center gap-1">
+    <span
+      className="relative inline-flex"
+      onPointerEnter={() => setOpen(true)}
+      onPointerLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+    >
       {children}
-      {keys.length > 0 && (
-        <span id={keyId} className="flex flex-col items-center gap-0.5">
-          {keys.map(({ kind, combo }) => (
-            // The space keeps the two keys apart in the button's description.
-            <Fragment key={kind}>
-              {" "}
-              <KeyCombo combo={combo} size="sm" kind={kind} />
-            </Fragment>
-          ))}
+      {/* Below, not above: above it would cover the odds chips. The top
+          padding bridges the gap to the button, so moving the pointer onto
+          the tooltip does not close it. */}
+      <span
+        className={`absolute top-full left-1/2 z-20 -translate-x-1/2 pt-2 ${open ? "" : "hidden"}`}
+      >
+        <span className="flex items-center gap-2 whitespace-nowrap rounded-md border border-border-subtle bg-bg-card px-2 py-1.5 text-xs font-semibold text-text-primary shadow-lg">
+          <span aria-hidden="true">{label}</span>
+          {keys.length > 0 && (
+            <span id={keyId} className="flex items-center gap-1">
+              {keys.map(({ kind, combo }) => (
+                // The space keeps the two keys apart in the button's description.
+                <Fragment key={kind}>
+                  {" "}
+                  <KeyCombo combo={combo} size="sm" kind={kind} />
+                </Fragment>
+              ))}
+            </span>
+          )}
         </span>
-      )}
-    </div>
+      </span>
+    </span>
   );
 }
 
@@ -113,9 +144,9 @@ export function DashboardCounterTab({
   // so a plain hunt keeps exactly the numbers it had before the feature.
   const hasPhases = phase.children.length > 0;
   const canEndPhase = !isCompleted && !phase.isPhase;
-  // Keys shown under the matching buttons: the global key while this hunt is
-  // the target, then the hunt's pinned key. A finished hunt no longer reacts
-  // to either, so they are left out there.
+  // Keys shown in the matching buttons' tooltips: the global key while this
+  // hunt is the target, then the hunt's pinned key. A finished hunt no longer
+  // reacts to either, so they are left out there.
   const keyIdBase = useId();
   const showGlobalBadge = isGlobalTarget && !isCompleted;
   const actionKeys = (action: EntryHotkeyAction): ActionKey[] => {
@@ -127,7 +158,7 @@ export function DashboardCounterTab({
     if (pinnedCombo) keys.push({ kind: "entry", combo: pinnedCombo });
     return keys;
   };
-  /** Props that tie a button to the keys drawn below it. */
+  /** Props that tie a button to the keys listed in its tooltip. */
   const keyProps = (action: EntryHotkeyAction) => {
     const keys = actionKeys(action);
     if (keys.length === 0) return {};
@@ -236,17 +267,16 @@ export function DashboardCounterTab({
           )}
         </div>
 
-        {/* Action row: minus (secondary), plus (primary accent), reset (ghost) */}
-        {/* Top-aligned so keys under one button do not shift the others. */}
-        <div className="flex items-start justify-center gap-2 mt-5">
-          <ActionWithKeys keys={actionKeys("decrement")} keyId={`${keyIdBase}-decrement`}>
+        {/* Action row: minus (secondary), plus (primary accent), reset (ghost).
+            Keys live in each button's tooltip instead of under the row. */}
+        <div className="flex items-center justify-center gap-2 mt-5">
+          <KeyTooltip label={`\u2212${step}`} keys={actionKeys("decrement")} keyId={`${keyIdBase}-decrement`}>
             <button
               {...keyProps("decrement")}
               onClick={() => !isCompleted && onDecrement(pokemon.id)}
               disabled={isCompleted}
               aria-label={`\u2212${step}`}
               className="flex items-center justify-center h-11 w-11 rounded-md bg-bg-card border border-border-subtle text-text-muted hover:bg-bg-hover hover:text-text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={`\u2212${step}`}
             >
               {hasCustomStep ? (
                 <span className="text-base font-bold">&minus;{pokemon.step}</span>
@@ -254,15 +284,14 @@ export function DashboardCounterTab({
                 <Minus className="w-5 h-5" />
               )}
             </button>
-          </ActionWithKeys>
-          <ActionWithKeys keys={actionKeys("increment")} keyId={`${keyIdBase}-increment`}>
+          </KeyTooltip>
+          <KeyTooltip label={`+${step}`} keys={actionKeys("increment")} keyId={`${keyIdBase}-increment`}>
             <button
               {...keyProps("increment")}
               onClick={() => !isCompleted && onIncrement(pokemon.id)}
               disabled={isCompleted}
               aria-label={`+${step}`}
               className="flex items-center justify-center h-11 min-w-32 px-8 rounded-md bg-accent-blue text-bg-primary font-bold hover:bg-accent-blue/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={`+${step}`}
             >
               {hasCustomStep ? (
                 <span className="text-lg font-bold">+{pokemon.step}</span>
@@ -270,19 +299,18 @@ export function DashboardCounterTab({
                 <Plus className="w-6 h-6 stroke-[2.5px]" />
               )}
             </button>
-          </ActionWithKeys>
+          </KeyTooltip>
           {!isCompleted && (
-            <ActionWithKeys keys={actionKeys("reset")} keyId={`${keyIdBase}-reset`}>
+            <KeyTooltip label={t("tooltip.common.reset")} keys={actionKeys("reset")} keyId={`${keyIdBase}-reset`}>
               <button
                 {...keyProps("reset")}
                 onClick={() => onReset(pokemon.id)}
                 className="flex items-center justify-center h-11 w-11 rounded-md text-text-muted hover:bg-bg-hover hover:text-text-primary transition-colors"
-                title={t("tooltip.common.reset")}
                 aria-label={t("tooltip.common.reset")}
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
-            </ActionWithKeys>
+            </KeyTooltip>
           )}
           {canEndPhase && (
             <button

@@ -592,7 +592,7 @@ describe("Dashboard", () => {
     render(<Dashboard />);
     await act(async () => {});
     // The step should appear in the increment/decrement buttons
-    expect(screen.getByText("+5")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "+5" })).toHaveTextContent("+5");
   });
 
   // --- Timer with running state ---
