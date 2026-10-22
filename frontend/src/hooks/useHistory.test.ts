@@ -176,4 +176,15 @@ describe("useHistory", () => {
     // Stack is capped at 50, so we can undo at most 49 times (50 entries, index 49 → 0)
     expect(undoCount).toBe(49);
   });
+
+  it("drops a pending push on unmount", () => {
+    const { result, unmount } = renderHook(() => useHistory(0, 100));
+
+    act(() => {
+      result.current.push(1);
+    });
+    unmount();
+
+    expect(vi.getTimerCount()).toBe(0);
+  });
 });

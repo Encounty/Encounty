@@ -3,7 +3,7 @@
  * Used by the overlay editor to allow undoing drag/resize operations without
  * creating a history entry for every pixel moved.
  */
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 /**
  * useHistory provides a bounded undo/redo stack for any serializable value.
@@ -17,6 +17,10 @@ export function useHistory<T>(initial: T, debounceMs = 400) {
   const [stack, setStack] = useState<T[]>([initial]);
   const [index, setIndex] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // A pending debounced push must not commit after unmount: it would set
+  // state on a dead component, and in tests it fires after the DOM is gone.
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const push = (state: T) => {
     clearTimeout(timer.current);
