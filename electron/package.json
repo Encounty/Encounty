@@ -16,11 +16,11 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "electron": "^44.9.0",
-    "electron-builder": "26.15.3",
+    "electron-builder": "26.18.0",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "electron-updater": "^6.8.9"
+    "electron-updater": "^6.8.11"
   },
   "resolutions": {
     "js-yaml": "4.3.2"
