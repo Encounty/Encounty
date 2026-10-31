@@ -90,6 +90,13 @@ describe("getMethodOdds", () => {
     expect(getMethodOdds("pokemon-scarlet", "encounter", true)).toEqual([1, 1365]);
   });
 
+  it("ignores the shiny charm for gifts while soft resets keep it", () => {
+    expect(getMethodsForGame("pokemon-ultra-moon")).toContain("gift");
+    expect(getMethodOdds("pokemon-ultra-moon", "gift", true)).toEqual([1, 4096]);
+    expect(getMethodOdds("pokemon-ultra-moon", "soft_reset", true)).toEqual([1, 1365]);
+    expect(getMethodOdds("pokemon-black-2", "gift", true)).toEqual([1, 8192]);
+  });
+
   it("returns method-specific odds for masuda in DPPt", () => {
     expect(getMethodOdds("pokemon-diamond", "masuda", false)).toEqual([1, 1638]);
   });

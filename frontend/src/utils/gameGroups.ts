@@ -282,6 +282,11 @@ gen5Bw2.methods = {
   fishing: BC(gen5Bw2),
   roaming_reset: BC(gen5Bw2),
   swarm: BC(gen5Bw2),
+  // NPC gifts (Type: Null, Poipole, fossils, ...) roll their PID once: the game
+  // treats every gift as a fixed-sync encounter and skips the Shiny Charm's
+  // extra rolls (3DSRNGTool StationaryRNG, AlwaysSync => Gift). Soft resets on
+  // static encounters still get them, so gifts need their own method.
+  gift: B(gen5Bw2),
 };
 
 const gen6Xy: GameGroup = {
@@ -306,6 +311,8 @@ gen6Xy.methods = {
   breeding: { base: gen6Xy.baseOdds, charm: [1, 1365] },
   fishing: { base: gen6Xy.baseOdds, charm: [1, 1365] },
   rock_smash: { base: gen6Xy.baseOdds, charm: [1, 1365] },
+  // The Shiny Charm does not apply to NPC gifts, see gen5Bw2.
+  gift: B(gen6Xy),
 };
 
 const gen6Oras: GameGroup = {
@@ -330,6 +337,8 @@ gen6Oras.methods = {
   fishing: { base: gen6Oras.baseOdds, charm: [1, 1365] },
   soaring: { base: gen6Oras.baseOdds, charm: [1, 1365] },
   rock_smash: { base: gen6Oras.baseOdds, charm: [1, 1365] },
+  // The Shiny Charm does not apply to NPC gifts, see gen5Bw2.
+  gift: B(gen6Oras),
 };
 
 const gen7Sm: GameGroup = {
@@ -347,6 +356,8 @@ gen7Sm.methods = {
   breeding: { base: gen7Sm.baseOdds, charm: [1, 1365] },
   fishing: { base: gen7Sm.baseOdds, charm: [1, 1365] },
   island_scan: { base: gen7Sm.baseOdds, charm: [1, 1365] },
+  // The Shiny Charm does not apply to NPC gifts, see gen5Bw2.
+  gift: B(gen7Sm),
 };
 
 const gen7Usum: GameGroup = {
@@ -365,6 +376,8 @@ gen7Usum.methods = {
   breeding: { base: gen7Usum.baseOdds, charm: [1, 1365] },
   fishing: { base: gen7Usum.baseOdds, charm: [1, 1365] },
   island_scan: { base: gen7Usum.baseOdds, charm: [1, 1365] },
+  // The Shiny Charm does not apply to NPC gifts, see gen5Bw2.
+  gift: B(gen7Usum),
 };
 
 const gen7Lgpe: GameGroup = {
@@ -385,6 +398,8 @@ gen7Lgpe.methods = {
   // the app has no Lure toggle and every other method uses the itemless base.
   catch_combo: { base: [1, 342], charm: [1, 293] },
   fishing: { base: gen7Lgpe.baseOdds, charm: [1, 1365] },
+  // The Shiny Charm does not apply to NPC gifts, see gen5Bw2.
+  gift: B(gen7Lgpe),
 };
 
 const gen8Swsh: GameGroup = {
