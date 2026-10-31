@@ -818,10 +818,10 @@ electron-updater@^6.8.11:
     semver "~7.7.3"
     tiny-typed-emitter "^2.1.0"
 
-electron@^44.9.0:
-  version "44.9.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-44.9.0.tgz#540c3050b23b3b6e5191201c804e9f4887842140"
-  integrity sha512-boP8zA5OIoMGYe3uWP4IqB1VJNoEzdHYgcBaVYnd1DBv5TogwXkbM4yJGSfNmYCzalVQ5J3TAIbaKOY+ILTnyg==
+electron@^45.1.0:
+  version "45.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-45.1.0.tgz#0958d57fdc504123396bfb6ca1563b31e35b67d4"
+  integrity sha512-i7qKVAh/KR5v1pf56NhGGX2QYHcdjvLgS7koL6ui50c+zUDGLRunR95nXcTpHPURKOQ4GDBG8BmXiDgOQ8DD0A==
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"
