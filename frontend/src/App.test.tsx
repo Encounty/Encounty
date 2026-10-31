@@ -693,11 +693,11 @@ describe("App", () => {
     );
 
     await waitFor(() => {
-      const link = screen.getByText("「Foreshadow」");
+      const link = screen.getByText("「目撃！テト31世」");
       expect(link).toBeInTheDocument();
       expect(link.closest("a")).toHaveAttribute(
         "href",
-        "https://www.youtube.com/watch?v=SiTi3WCmzfc",
+        "https://www.youtube.com/watch?v=uWMr16O_Aso",
       );
       expect(link.closest("a")).toHaveAttribute("target", "_blank");
     });

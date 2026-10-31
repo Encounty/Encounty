@@ -567,12 +567,12 @@ function AppShell() {
           {/* Center */}
           <p className="text-center">
             <a
-              href="https://www.youtube.com/watch?v=SiTi3WCmzfc"
+              href="https://www.youtube.com/watch?v=uWMr16O_Aso"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-faint tracking-wide hover:text-text-muted transition-colors"
             >
-              「Foreshadow」
+              「目撃！テト31世」
             </a>
           </p>
 
